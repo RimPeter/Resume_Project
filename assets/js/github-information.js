@@ -28,10 +28,15 @@ function fetchGitHubInformation(event) {
             <img src="assets/css/loader.gif" alt="loading..." />
         </div>`
   );
-  $.when($.getJSON(`https://api.github.com/users/${username}`)).then(
-    function (response) {
-      var userData = response;
+  $.when(
+    $.getJSON(`https://api.github.com/users/${username}`),
+    $.getJSON(`https://api.github.com/users/${username}/repos`)
+).then(
+    function (firstResponse, secondResponse) {
+        var repodata = secondResponse[0];
+      var userData = firstResponse[0];
       $("#gh-user-data").html(userInformationHTML(userData));
+        $("#gh-repo-data").html(repoInformationHTML(repodata));
     },
     function (errorResponse) {
       if (errorResponse.status === 404) {
